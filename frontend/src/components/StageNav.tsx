@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { cx } from "./ui";
 
 export type Stage = "upload" | "profile" | "explore" | "discover" | "report";
@@ -13,9 +14,19 @@ export const STAGES: { id: Stage; label: string; hint: string }[] = [
 ];
 
 export function StageNav({ active, onSelect, hasDataset }: { active: Stage; onSelect: (s: Stage) => void; hasDataset: boolean }) {
+  const listRef = useRef<HTMLOListElement>(null);
+
+  // On narrow screens the stages scroll sideways: keep the current one in view.
+  useEffect(() => {
+    const list = listRef.current;
+    const current = list?.querySelector<HTMLElement>('[aria-current="step"]');
+    if (!list || !current || list.scrollWidth <= list.clientWidth) return;
+    list.scrollLeft += current.getBoundingClientRect().left - list.getBoundingClientRect().left - 16;
+  }, [active]);
+
   return (
     <nav aria-label="Analysis stages" className="md:w-56 md:shrink-0">
-      <ol className="flex gap-2 overflow-x-auto pb-1 md:sticky md:top-6 md:flex-col md:gap-1 md:overflow-visible">
+      <ol ref={listRef} className="flex gap-2 overflow-x-auto pb-1 md:sticky md:top-6 md:flex-col md:gap-1 md:overflow-visible">
         {STAGES.map((s, i) => {
           const disabled = s.id !== "upload" && !hasDataset;
           const current = active === s.id;

@@ -56,7 +56,7 @@ export function HistogramChart({ column, bins }: { column: string; bins: Histogr
         <YAxis tick={AXIS} allowDecimals={false} width={48} label={{ value: "rows", angle: -90, position: "insideLeft", style: AXIS }} />
         <Tooltip formatter={tooltipNumber} />
         <Legend verticalAlign="top" height={24} />
-        <Bar dataKey="rows" name="Number of rows" fill={ACCENT} radius={[3, 3, 0, 0]} />
+        <Bar isAnimationActive={false} dataKey="rows" name="Number of rows" fill={ACCENT} radius={[3, 3, 0, 0]} />
       </BarChart>
     </ChartFrame>
   );
@@ -77,7 +77,7 @@ export function CategoryBarChart({ column, rows, otherCount }: { column: string;
         <YAxis type="category" dataKey="name" tick={AXIS} width={120} />
         <Tooltip formatter={tooltipNumber} />
         <Legend verticalAlign="top" height={24} />
-        <Bar dataKey="count" name="Number of rows" fill={ACCENT} radius={[0, 3, 3, 0]} />
+        <Bar isAnimationActive={false} dataKey="count" name="Number of rows" fill={ACCENT} radius={[0, 3, 3, 0]} />
       </BarChart>
     </ChartFrame>
   );
@@ -97,7 +97,7 @@ export function TimeSeriesChart({ points, valueLabel, showCount }: { points: Tim
         <YAxis tick={AXIS} tickFormatter={compactNumber} width={56} />
         <Tooltip formatter={tooltipNumber} />
         <Legend verticalAlign="top" height={24} />
-        <Line type="monotone" dataKey="value" name={valueLabel} stroke={ACCENT} strokeWidth={2} dot={{ r: 3 }} connectNulls={false} />
+        <Line isAnimationActive={false} type="monotone" dataKey="value" name={valueLabel} stroke={ACCENT} strokeWidth={2} dot={{ r: 3 }} connectNulls={false} />
       </LineChart>
     </ChartFrame>
   );
@@ -123,7 +123,7 @@ export function GroupBarChart({ rows, metric, valueColumn, categoryColumn }: {
         <YAxis type="category" dataKey="name" tick={AXIS} width={120} />
         <Tooltip formatter={tooltipNumber} />
         <Legend verticalAlign="top" height={24} />
-        <Bar dataKey="value" name={label} fill={ACCENT_2} radius={[0, 3, 3, 0]} />
+        <Bar isAnimationActive={false} dataKey="value" name={label} fill={ACCENT_2} radius={[0, 3, 3, 0]} />
       </BarChart>
     </ChartFrame>
   );
@@ -142,7 +142,7 @@ export function ScatterPlot({ x, y, points, r }: { x: string; y: string; points:
         <YAxis type="number" dataKey="y" name={y} tick={AXIS} tickFormatter={compactNumber} width={56} label={{ value: y, angle: -90, position: "insideLeft", style: AXIS }} />
         <Tooltip formatter={tooltipNumber} cursor={{ strokeDasharray: "3 3" }} />
         <Legend verticalAlign="top" height={24} />
-        <Scatter name={`Rows (${points.length} shown)`} data={points} fill={ACCENT} fillOpacity={0.6} />
+        <Scatter isAnimationActive={false} name={`Rows (${points.length} shown)`} data={points} fill={ACCENT} fillOpacity={0.6} />
       </ScatterChart>
     </ChartFrame>
   );

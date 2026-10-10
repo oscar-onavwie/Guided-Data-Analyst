@@ -68,12 +68,15 @@ def test_demo_journey_upload_to_report(page: Page):
     continue_to(page, "Explore")
     expect(page.get_by_text("Distribution of amount_gbp").first).to_be_visible()
     expect(page.locator(".recharts-surface").first).to_be_visible()
+    assert page.locator(".recharts-bar-rectangle").count() > 0  # histogram bars drawn from backend bins
+    shot(page, "04a-explore-numeric")
     page.get_by_role("tab", name="Over time").click()
     expect(page.get_by_text(re.compile("over time$")).first).to_be_visible()
     page.get_by_label("Period").select_option("quarter")
     expect(page.get_by_text("2025 Q4").first).to_be_attached()
     page.get_by_role("tab", name="Compare groups").click()
     expect(page.get_by_role("tabpanel")).to_contain_text("amount_gbp")
+    assert page.locator(".recharts-bar-rectangle").count() >= 2  # one bar per group
     shot(page, "04-explore")
 
     continue_to(page, "Discover")
@@ -104,7 +107,7 @@ def test_upload_csv_excel_and_errors(page: Page, tmp_path: Path):
     file_input.set_input_files(str(ROOT / "sample-data" / "retail_product_performance.csv"))
     expect(page.get_by_text("Parsed successfully").first).to_be_visible()
     expect(page.get_by_text("200 rows × 11 cols").first).to_be_visible()
-    expect(page.get_by_text("DEMO DATA")).to_have_count(0)  # an upload is never labelled as demo
+    expect(page.get_by_text("DEMO DATA", exact=True)).to_have_count(0)  # an upload is never labelled as demo
 
     file_input.set_input_files(str(ROOT / "sample-data" / "workforce_operational_performance.xlsx"))
     expect(page.get_by_label("Worksheet")).to_be_visible()
