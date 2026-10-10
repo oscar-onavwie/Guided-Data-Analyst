@@ -40,6 +40,11 @@ function ChartFrame({ title, summary, children, height = 280 }: { title: string;
   );
 }
 
+const shortLabel = (v: unknown) => {
+  const text = String(v);
+  return text.length > 14 ? `${text.slice(0, 13)}…` : text;
+};
+
 const tooltipNumber = (v: unknown) => (typeof v === "number" ? formatNumber(v) : String(v));
 
 export function HistogramChart({ column, bins }: { column: string; bins: HistogramBin[] }) {
@@ -63,21 +68,20 @@ export function HistogramChart({ column, bins }: { column: string; bins: Histogr
 }
 
 export function CategoryBarChart({ column, rows, otherCount }: { column: string; rows: CategoryCount[]; otherCount: number }) {
-  const data = [...rows.map((r) => ({ name: r.value, count: r.count, pct: r.pct }))];
-  if (otherCount > 0) data.push({ name: "Other", count: otherCount, pct: Number.NaN });
+  const data = rows.map((r) => ({ name: r.value, count: r.count }));
+  if (otherCount > 0) data.push({ name: "Other", count: otherCount });
   return (
     <ChartFrame
       title={`Most common values of ${column}`}
       summary={`Bar chart of ${column}. ${rows.slice(0, 3).map((r) => `${r.value}: ${r.count} rows`).join("; ")}.`}
-      height={Math.max(200, data.length * 30 + 60)}
     >
-      <BarChart data={data} layout="vertical" margin={{ top: 8, right: 16, bottom: 8, left: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis type="number" tick={AXIS} allowDecimals={false} />
-        <YAxis type="category" dataKey="name" tick={AXIS} width={120} />
+      <BarChart data={data} margin={{ top: 8, right: 8, bottom: 32, left: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="name" tick={AXIS} angle={-30} textAnchor="end" height={64} interval={0} tickFormatter={shortLabel} />
+        <YAxis tick={AXIS} allowDecimals={false} width={48} tickFormatter={compactNumber} />
         <Tooltip formatter={tooltipNumber} />
         <Legend verticalAlign="top" height={24} />
-        <Bar isAnimationActive={false} dataKey="count" name="Number of rows" fill={ACCENT} radius={[0, 3, 3, 0]} />
+        <Bar isAnimationActive={false} dataKey="count" name="Number of rows" fill={ACCENT} radius={[3, 3, 0, 0]} />
       </BarChart>
     </ChartFrame>
   );
@@ -115,15 +119,14 @@ export function GroupBarChart({ rows, metric, valueColumn, categoryColumn }: {
     <ChartFrame
       title={`${label} by ${categoryColumn}`}
       summary={`Bar chart of ${label} by ${categoryColumn}: ${data.slice(0, 4).map((d) => `${d.name} ${formatNumber(d.value)}`).join(", ")}.`}
-      height={Math.max(220, data.length * 30 + 60)}
     >
-      <BarChart data={data} layout="vertical" margin={{ top: 8, right: 16, bottom: 8, left: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis type="number" tick={AXIS} tickFormatter={compactNumber} />
-        <YAxis type="category" dataKey="name" tick={AXIS} width={120} />
+      <BarChart data={data} margin={{ top: 8, right: 8, bottom: 32, left: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="name" tick={AXIS} angle={-30} textAnchor="end" height={64} interval={0} tickFormatter={shortLabel} />
+        <YAxis tick={AXIS} tickFormatter={compactNumber} width={56} />
         <Tooltip formatter={tooltipNumber} />
         <Legend verticalAlign="top" height={24} />
-        <Bar isAnimationActive={false} dataKey="value" name={label} fill={ACCENT_2} radius={[0, 3, 3, 0]} />
+        <Bar isAnimationActive={false} dataKey="value" name={label} fill={ACCENT_2} radius={[3, 3, 0, 0]} />
       </BarChart>
     </ChartFrame>
   );

@@ -70,6 +70,8 @@ def test_demo_journey_upload_to_report(page: Page):
     expect(page.locator(".recharts-surface").first).to_be_visible()
     assert page.locator(".recharts-bar-rectangle").count() > 0  # histogram bars drawn from backend bins
     shot(page, "04a-explore-numeric")
+    page.get_by_role("tab", name=re.compile("^Categories")).click()
+    assert page.locator(".recharts-bar-rectangle").count() >= 2  # one bar per category
     page.get_by_role("tab", name="Over time").click()
     expect(page.get_by_text(re.compile("over time$")).first).to_be_visible()
     page.get_by_label("Period").select_option("quarter")
@@ -119,12 +121,12 @@ def test_upload_csv_excel_and_errors(page: Page, tmp_path: Path):
     bad = tmp_path / "notes.txt"
     bad.write_text("hello")
     file_input.set_input_files(str(bad))
-    expect(page.get_by_role("alert")).to_contain_text("Unsupported file type")
+    expect(page.get_by_role("alert").filter(has_text="Unsupported file type")).to_be_visible()
 
     malformed = tmp_path / "broken.csv"
     malformed.write_text("a,b\n1,2\n3,4,5,6\n")
     file_input.set_input_files(str(malformed))
-    expect(page.get_by_role("alert")).to_contain_text("could not be parsed")
+    expect(page.get_by_role("alert").filter(has_text="could not be parsed")).to_be_visible()
     shot(page, "08-upload-error")
 
 
