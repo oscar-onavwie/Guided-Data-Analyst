@@ -76,9 +76,14 @@ cd backend && pytest -q && ruff check . && ruff format --check .
 
 # Frontend: unit tests, type check, lint, production build
 cd frontend && npm test && npm run typecheck && npm run lint && npm run build
+
+# End-to-end (real browser, both servers running): demo journey from upload to report,
+# CSV and Excel uploads with worksheet selection, error messages, phone layout, keyboard access
+pip install pytest playwright && python -m playwright install chromium
+pytest e2e -q
 ```
 
-GitHub Actions runs all of the above on every push ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+GitHub Actions runs all of the above on every push ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)); end-to-end screenshots are attached to each run as an artifact.
 
 ## Project structure
 
@@ -100,6 +105,7 @@ frontend/
   src/app/          Next.js App Router entry
   src/components/   Workspace, stage screens, charts, UI kit
   src/lib/          Typed API client, shared types, formatting helpers
+e2e/                Playwright browser tests of the full journey
 sample-data/        Synthetic demo datasets (+ README of planted patterns)
 scripts/            Sample-data generator
 docs/               Architecture, methodology, API reference, OpenAPI spec
@@ -132,7 +138,7 @@ Files are processed in memory and never written to disk by the app. A dataset st
 - Significance tests (e.g. Welch's t-test, chi-square) and confidence intervals on findings.
 - Server-side PDF generation.
 - Persistent, authenticated workspaces (Redis/Postgres) for multi-user deployment.
-- Browser-level end-to-end tests (Playwright) of the full upload-to-report journey.
+- Visual regression checks on the end-to-end screenshots.
 
 ## Licence
 
