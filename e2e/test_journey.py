@@ -71,14 +71,16 @@ def test_demo_journey_upload_to_report(page: Page):
     assert page.locator(".recharts-bar-rectangle").count() > 0  # histogram bars drawn from backend bins
     shot(page, "04a-explore-numeric")
     page.get_by_role("tab", name=re.compile("^Categories")).click()
-    assert page.locator(".recharts-bar-rectangle").count() >= 2  # one bar per category
+    # Charts size themselves after mount, so wait for bars rather than counting immediately
+    expect(page.locator(".recharts-bar-rectangle").nth(1)).to_be_attached()  # one bar per category
+    shot(page, "04b-explore-categories")
     page.get_by_role("tab", name="Over time").click()
     expect(page.get_by_text(re.compile("over time$")).first).to_be_visible()
     page.get_by_label("Period").select_option("quarter")
     expect(page.get_by_text("2025 Q4").first).to_be_attached()
     page.get_by_role("tab", name="Compare groups").click()
     expect(page.get_by_role("tabpanel")).to_contain_text("amount_gbp")
-    assert page.locator(".recharts-bar-rectangle").count() >= 2  # one bar per group
+    expect(page.locator(".recharts-bar-rectangle").nth(1)).to_be_attached()  # one bar per group
     shot(page, "04-explore")
 
     continue_to(page, "Discover")
