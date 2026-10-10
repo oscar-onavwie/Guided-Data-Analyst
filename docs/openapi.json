@@ -1,0 +1,2489 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Guided Data Analyst API",
+        "description": "Upload a CSV/XLSX dataset, profile it, explore it, get evidence-backed findings and export a report.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/health": {
+            "get": {
+                "summary": "Health",
+                "operationId": "health_api_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "type": "object",
+                                    "title": "Response Health Api Health Get"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/config": {
+            "get": {
+                "summary": "Config",
+                "operationId": "config_api_config_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppConfig"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/demo-datasets": {
+            "get": {
+                "summary": "Demos",
+                "operationId": "demos_api_demo_datasets_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/DemoDataset"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Demos Api Demo Datasets Get"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/files/sheets": {
+            "post": {
+                "summary": "Sheets",
+                "operationId": "sheets_api_files_sheets_post",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_sheets_api_files_sheets_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SheetList"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets": {
+            "post": {
+                "summary": "Upload",
+                "operationId": "upload_api_datasets_post",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_api_datasets_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DatasetSummary"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/demo-datasets/{key}": {
+            "post": {
+                "summary": "Load Demo",
+                "operationId": "load_demo_api_demo_datasets__key__post",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DatasetSummary"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}": {
+            "get": {
+                "summary": "Get Dataset",
+                "operationId": "get_dataset_api_datasets__dataset_id__get",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DatasetSummary"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Dataset",
+                "operationId": "delete_dataset_api_datasets__dataset_id__delete",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/preview": {
+            "get": {
+                "summary": "Get Preview",
+                "operationId": "get_preview_api_datasets__dataset_id__preview_get",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0,
+                            "title": "Offset"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 200,
+                            "minimum": 1,
+                            "default": 50,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Preview"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/profile": {
+            "get": {
+                "summary": "Get Profile",
+                "operationId": "get_profile_api_datasets__dataset_id__profile_get",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DatasetProfile"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/analysis": {
+            "get": {
+                "summary": "Get Analysis",
+                "operationId": "get_analysis_api_datasets__dataset_id__analysis_get",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AnalysisBundle"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/explore/grouped": {
+            "post": {
+                "summary": "Explore Grouped",
+                "operationId": "explore_grouped_api_datasets__dataset_id__explore_grouped_post",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GroupedRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupedSummary"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/explore/scatter": {
+            "post": {
+                "summary": "Explore Scatter",
+                "operationId": "explore_scatter_api_datasets__dataset_id__explore_scatter_post",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ScatterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScatterData"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/explore/timeseries": {
+            "post": {
+                "summary": "Explore Timeseries",
+                "operationId": "explore_timeseries_api_datasets__dataset_id__explore_timeseries_post",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TimeSeriesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimeSeries"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/findings": {
+            "get": {
+                "summary": "Get Findings",
+                "operationId": "get_findings_api_datasets__dataset_id__findings_get",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FindingsResult"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/report.html": {
+            "get": {
+                "summary": "Report Html",
+                "operationId": "report_html_api_datasets__dataset_id__report_html_get",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    },
+                    {
+                        "name": "download",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true,
+                            "title": "Download"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/export/{table}.csv": {
+            "get": {
+                "summary": "Export Csv",
+                "operationId": "export_csv_api_datasets__dataset_id__export__table__csv_get",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    },
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Table"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/datasets/{dataset_id}/ai-explanation": {
+            "post": {
+                "summary": "Ai Explanation",
+                "operationId": "ai_explanation_api_datasets__dataset_id__ai_explanation_post",
+                "parameters": [
+                    {
+                        "name": "dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Dataset Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AIRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AIExplanation"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AIExplanation": {
+                "properties": {
+                    "summary": {
+                        "type": "string",
+                        "title": "Summary"
+                    },
+                    "explanations": {
+                        "items": {
+                            "$ref": "#/components/schemas/AIFindingExplanation"
+                        },
+                        "type": "array",
+                        "title": "Explanations"
+                    },
+                    "follow_ups": {
+                        "items": {
+                            "$ref": "#/components/schemas/AIFollowUp"
+                        },
+                        "type": "array",
+                        "title": "Follow Ups"
+                    },
+                    "model": {
+                        "type": "string",
+                        "title": "Model"
+                    },
+                    "warnings": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Warnings"
+                    },
+                    "disclaimer": {
+                        "type": "string",
+                        "title": "Disclaimer"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "summary",
+                    "explanations",
+                    "follow_ups",
+                    "model",
+                    "warnings",
+                    "disclaimer"
+                ],
+                "title": "AIExplanation"
+            },
+            "AIFindingExplanation": {
+                "properties": {
+                    "finding_id": {
+                        "type": "string",
+                        "title": "Finding Id"
+                    },
+                    "explanation": {
+                        "type": "string",
+                        "title": "Explanation"
+                    },
+                    "unverified_numbers": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Unverified Numbers"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "finding_id",
+                    "explanation"
+                ],
+                "title": "AIFindingExplanation"
+            },
+            "AIFollowUp": {
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "title": "Question"
+                    },
+                    "finding_ids": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Finding Ids"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "question",
+                    "finding_ids"
+                ],
+                "title": "AIFollowUp"
+            },
+            "AIRequest": {
+                "properties": {
+                    "consent": {
+                        "type": "boolean",
+                        "title": "Consent",
+                        "description": "User has acknowledged that summaries are sent to an external AI service."
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "consent"
+                ],
+                "title": "AIRequest"
+            },
+            "AnalysisBundle": {
+                "properties": {
+                    "numeric": {
+                        "items": {
+                            "$ref": "#/components/schemas/NumericAnalysis"
+                        },
+                        "type": "array",
+                        "title": "Numeric"
+                    },
+                    "categorical": {
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryFrequency"
+                        },
+                        "type": "array",
+                        "title": "Categorical"
+                    },
+                    "dates": {
+                        "items": {
+                            "$ref": "#/components/schemas/DateAnalysis"
+                        },
+                        "type": "array",
+                        "title": "Dates"
+                    },
+                    "correlation": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/CorrelationMatrix"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "default_grouped": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/GroupedSummary"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "default_timeseries": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/TimeSeries"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "default_scatter": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ScatterData"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "measures": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Measures"
+                    },
+                    "dimensions": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Dimensions"
+                    },
+                    "date_columns": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Date Columns"
+                    },
+                    "skipped": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Skipped"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "numeric",
+                    "categorical",
+                    "dates",
+                    "correlation",
+                    "default_grouped",
+                    "default_timeseries",
+                    "default_scatter",
+                    "measures",
+                    "dimensions",
+                    "date_columns",
+                    "skipped"
+                ],
+                "title": "AnalysisBundle"
+            },
+            "AppConfig": {
+                "properties": {
+                    "max_upload_mb": {
+                        "type": "integer",
+                        "title": "Max Upload Mb"
+                    },
+                    "max_rows": {
+                        "type": "integer",
+                        "title": "Max Rows"
+                    },
+                    "max_columns": {
+                        "type": "integer",
+                        "title": "Max Columns"
+                    },
+                    "session_ttl_minutes": {
+                        "type": "integer",
+                        "title": "Session Ttl Minutes"
+                    },
+                    "ai_available": {
+                        "type": "boolean",
+                        "title": "Ai Available"
+                    },
+                    "data_retention": {
+                        "type": "string",
+                        "title": "Data Retention"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "max_upload_mb",
+                    "max_rows",
+                    "max_columns",
+                    "session_ttl_minutes",
+                    "ai_available",
+                    "data_retention"
+                ],
+                "title": "AppConfig"
+            },
+            "Body_sheets_api_files_sheets_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "contentMediaType": "application/octet-stream",
+                        "title": "File"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_sheets_api_files_sheets_post"
+            },
+            "Body_upload_api_datasets_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "contentMediaType": "application/octet-stream",
+                        "title": "File"
+                    },
+                    "sheet": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Sheet"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_upload_api_datasets_post"
+            },
+            "BoxPlot": {
+                "properties": {
+                    "lower_whisker": {
+                        "type": "number",
+                        "title": "Lower Whisker"
+                    },
+                    "q1": {
+                        "type": "number",
+                        "title": "Q1"
+                    },
+                    "median": {
+                        "type": "number",
+                        "title": "Median"
+                    },
+                    "q3": {
+                        "type": "number",
+                        "title": "Q3"
+                    },
+                    "upper_whisker": {
+                        "type": "number",
+                        "title": "Upper Whisker"
+                    },
+                    "outliers": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "title": "Outliers"
+                    },
+                    "outlier_count": {
+                        "type": "integer",
+                        "title": "Outlier Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "lower_whisker",
+                    "q1",
+                    "median",
+                    "q3",
+                    "upper_whisker",
+                    "outliers",
+                    "outlier_count"
+                ],
+                "title": "BoxPlot"
+            },
+            "CategoryCount": {
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "title": "Value"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    },
+                    "pct": {
+                        "type": "number",
+                        "title": "Pct"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "value",
+                    "count",
+                    "pct"
+                ],
+                "title": "CategoryCount"
+            },
+            "CategoryFrequency": {
+                "properties": {
+                    "column": {
+                        "type": "string",
+                        "title": "Column"
+                    },
+                    "non_missing": {
+                        "type": "integer",
+                        "title": "Non Missing"
+                    },
+                    "missing": {
+                        "type": "integer",
+                        "title": "Missing"
+                    },
+                    "unique": {
+                        "type": "integer",
+                        "title": "Unique"
+                    },
+                    "rows": {
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryCount"
+                        },
+                        "type": "array",
+                        "title": "Rows"
+                    },
+                    "other_count": {
+                        "type": "integer",
+                        "title": "Other Count"
+                    },
+                    "other_categories": {
+                        "type": "integer",
+                        "title": "Other Categories"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "column",
+                    "non_missing",
+                    "missing",
+                    "unique",
+                    "rows",
+                    "other_count",
+                    "other_categories"
+                ],
+                "title": "CategoryFrequency"
+            },
+            "ColumnProfile": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "inferred_type": {
+                        "type": "string",
+                        "title": "Inferred Type"
+                    },
+                    "role": {
+                        "type": "string",
+                        "title": "Role"
+                    },
+                    "non_missing": {
+                        "type": "integer",
+                        "title": "Non Missing"
+                    },
+                    "missing": {
+                        "type": "integer",
+                        "title": "Missing"
+                    },
+                    "missing_pct": {
+                        "type": "number",
+                        "title": "Missing Pct"
+                    },
+                    "invalid": {
+                        "type": "integer",
+                        "title": "Invalid"
+                    },
+                    "invalid_examples": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Invalid Examples"
+                    },
+                    "unique": {
+                        "type": "integer",
+                        "title": "Unique"
+                    },
+                    "unique_pct": {
+                        "type": "number",
+                        "title": "Unique Pct"
+                    },
+                    "is_constant": {
+                        "type": "boolean",
+                        "title": "Is Constant"
+                    },
+                    "likely_identifier": {
+                        "type": "boolean",
+                        "title": "Likely Identifier"
+                    },
+                    "candidate_date": {
+                        "type": "boolean",
+                        "title": "Candidate Date"
+                    },
+                    "notes": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Notes"
+                    },
+                    "numeric": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/NumericSummary"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "top_categories": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/CategoryCount"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Top Categories"
+                    },
+                    "date_range": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/DateRange"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "sample_values": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Sample Values"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "inferred_type",
+                    "role",
+                    "non_missing",
+                    "missing",
+                    "missing_pct",
+                    "invalid",
+                    "invalid_examples",
+                    "unique",
+                    "unique_pct",
+                    "is_constant",
+                    "likely_identifier",
+                    "candidate_date",
+                    "notes",
+                    "sample_values"
+                ],
+                "title": "ColumnProfile"
+            },
+            "CorrelationMatrix": {
+                "properties": {
+                    "method": {
+                        "type": "string",
+                        "title": "Method"
+                    },
+                    "columns": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Columns"
+                    },
+                    "matrix": {
+                        "items": {
+                            "items": {
+                                "anyOf": [
+                                    {
+                                        "type": "number"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ]
+                            },
+                            "type": "array"
+                        },
+                        "type": "array",
+                        "title": "Matrix"
+                    },
+                    "pairs": {
+                        "items": {
+                            "$ref": "#/components/schemas/CorrelationPair"
+                        },
+                        "type": "array",
+                        "title": "Pairs"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "method",
+                    "columns",
+                    "matrix",
+                    "pairs"
+                ],
+                "title": "CorrelationMatrix"
+            },
+            "CorrelationPair": {
+                "properties": {
+                    "x": {
+                        "type": "string",
+                        "title": "X"
+                    },
+                    "y": {
+                        "type": "string",
+                        "title": "Y"
+                    },
+                    "r": {
+                        "type": "number",
+                        "title": "R"
+                    },
+                    "n": {
+                        "type": "integer",
+                        "title": "N"
+                    },
+                    "strength": {
+                        "type": "string",
+                        "enum": [
+                            "strong",
+                            "moderate",
+                            "weak"
+                        ],
+                        "title": "Strength"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "x",
+                    "y",
+                    "r",
+                    "n",
+                    "strength"
+                ],
+                "title": "CorrelationPair"
+            },
+            "DataIssue": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "confirmed",
+                            "potential"
+                        ],
+                        "title": "Severity"
+                    },
+                    "category": {
+                        "type": "string",
+                        "title": "Category"
+                    },
+                    "column": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Column"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "severity",
+                    "category",
+                    "message"
+                ],
+                "title": "DataIssue"
+            },
+            "DatasetProfile": {
+                "properties": {
+                    "rows": {
+                        "type": "integer",
+                        "title": "Rows"
+                    },
+                    "columns": {
+                        "type": "integer",
+                        "title": "Columns"
+                    },
+                    "duplicate_rows": {
+                        "type": "integer",
+                        "title": "Duplicate Rows"
+                    },
+                    "duplicate_pct": {
+                        "type": "number",
+                        "title": "Duplicate Pct"
+                    },
+                    "missing_cells": {
+                        "type": "integer",
+                        "title": "Missing Cells"
+                    },
+                    "missing_cells_pct": {
+                        "type": "number",
+                        "title": "Missing Cells Pct"
+                    },
+                    "type_counts": {
+                        "additionalProperties": {
+                            "type": "integer"
+                        },
+                        "type": "object",
+                        "title": "Type Counts"
+                    },
+                    "column_profiles": {
+                        "items": {
+                            "$ref": "#/components/schemas/ColumnProfile"
+                        },
+                        "type": "array",
+                        "title": "Column Profiles"
+                    },
+                    "issues": {
+                        "items": {
+                            "$ref": "#/components/schemas/DataIssue"
+                        },
+                        "type": "array",
+                        "title": "Issues"
+                    },
+                    "parse_notes": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Parse Notes"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "rows",
+                    "columns",
+                    "duplicate_rows",
+                    "duplicate_pct",
+                    "missing_cells",
+                    "missing_cells_pct",
+                    "type_counts",
+                    "column_profiles",
+                    "issues",
+                    "parse_notes"
+                ],
+                "title": "DatasetProfile"
+            },
+            "DatasetSummary": {
+                "properties": {
+                    "dataset_id": {
+                        "type": "string",
+                        "title": "Dataset Id"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "title": "Filename"
+                    },
+                    "file_type": {
+                        "type": "string",
+                        "enum": [
+                            "csv",
+                            "xlsx"
+                        ],
+                        "title": "File Type"
+                    },
+                    "sheet": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Sheet"
+                    },
+                    "sheets": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Sheets"
+                    },
+                    "is_demo": {
+                        "type": "boolean",
+                        "title": "Is Demo",
+                        "default": false
+                    },
+                    "demo_key": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Demo Key"
+                    },
+                    "rows": {
+                        "type": "integer",
+                        "title": "Rows"
+                    },
+                    "columns": {
+                        "type": "integer",
+                        "title": "Columns"
+                    },
+                    "column_names": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Column Names"
+                    },
+                    "parse_notes": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Parse Notes"
+                    },
+                    "loaded_at": {
+                        "type": "string",
+                        "title": "Loaded At"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "title": "Expires At"
+                    },
+                    "preview": {
+                        "$ref": "#/components/schemas/Preview"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "dataset_id",
+                    "filename",
+                    "file_type",
+                    "rows",
+                    "columns",
+                    "column_names",
+                    "parse_notes",
+                    "loaded_at",
+                    "expires_at",
+                    "preview"
+                ],
+                "title": "DatasetSummary"
+            },
+            "DateAnalysis": {
+                "properties": {
+                    "column": {
+                        "type": "string",
+                        "title": "Column"
+                    },
+                    "range": {
+                        "$ref": "#/components/schemas/DateRange"
+                    },
+                    "records_over_time": {
+                        "$ref": "#/components/schemas/TimeSeries"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "column",
+                    "range",
+                    "records_over_time"
+                ],
+                "title": "DateAnalysis"
+            },
+            "DateRange": {
+                "properties": {
+                    "min": {
+                        "type": "string",
+                        "title": "Min"
+                    },
+                    "max": {
+                        "type": "string",
+                        "title": "Max"
+                    },
+                    "span_days": {
+                        "type": "integer",
+                        "title": "Span Days"
+                    },
+                    "future_count": {
+                        "type": "integer",
+                        "title": "Future Count"
+                    },
+                    "pre_1900_count": {
+                        "type": "integer",
+                        "title": "Pre 1900 Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "min",
+                    "max",
+                    "span_days",
+                    "future_count",
+                    "pre_1900_count"
+                ],
+                "title": "DateRange"
+            },
+            "DemoDataset": {
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "title": "Key"
+                    },
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "title": "Filename"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "key",
+                    "title",
+                    "description",
+                    "filename"
+                ],
+                "title": "DemoDataset"
+            },
+            "Evidence": {
+                "properties": {
+                    "label": {
+                        "type": "string",
+                        "title": "Label"
+                    },
+                    "value": {
+                        "type": "string",
+                        "title": "Value"
+                    },
+                    "calculation": {
+                        "type": "string",
+                        "title": "Calculation"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "label",
+                    "value",
+                    "calculation"
+                ],
+                "title": "Evidence"
+            },
+            "Finding": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "kind": {
+                        "type": "string",
+                        "title": "Kind"
+                    },
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "evidence": {
+                        "items": {
+                            "$ref": "#/components/schemas/Evidence"
+                        },
+                        "type": "array",
+                        "title": "Evidence"
+                    },
+                    "columns": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Columns"
+                    },
+                    "period": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Period"
+                    },
+                    "why_it_matters": {
+                        "type": "string",
+                        "title": "Why It Matters"
+                    },
+                    "caveat": {
+                        "type": "string",
+                        "title": "Caveat"
+                    },
+                    "follow_up": {
+                        "type": "string",
+                        "title": "Follow Up"
+                    },
+                    "score": {
+                        "type": "number",
+                        "title": "Score"
+                    },
+                    "strength": {
+                        "type": "string",
+                        "enum": [
+                            "strong",
+                            "moderate",
+                            "weak"
+                        ],
+                        "title": "Strength"
+                    },
+                    "statement_type": {
+                        "type": "string",
+                        "const": "descriptive",
+                        "title": "Statement Type",
+                        "default": "descriptive"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "kind",
+                    "title",
+                    "description",
+                    "evidence",
+                    "columns",
+                    "why_it_matters",
+                    "caveat",
+                    "follow_up",
+                    "score",
+                    "strength"
+                ],
+                "title": "Finding"
+            },
+            "FindingsResult": {
+                "properties": {
+                    "findings": {
+                        "items": {
+                            "$ref": "#/components/schemas/Finding"
+                        },
+                        "type": "array",
+                        "title": "Findings"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    },
+                    "ranking_method": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Ranking Method"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "findings",
+                    "message",
+                    "ranking_method"
+                ],
+                "title": "FindingsResult"
+            },
+            "GroupRow": {
+                "properties": {
+                    "group": {
+                        "type": "string",
+                        "title": "Group"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    },
+                    "mean": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Mean"
+                    },
+                    "median": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Median"
+                    },
+                    "sum": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Sum"
+                    },
+                    "share_of_total": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Share Of Total"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "group",
+                    "count",
+                    "mean",
+                    "median",
+                    "sum",
+                    "share_of_total"
+                ],
+                "title": "GroupRow"
+            },
+            "GroupedRequest": {
+                "properties": {
+                    "category_column": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "Category Column"
+                    },
+                    "value_column": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "Value Column"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "category_column",
+                    "value_column"
+                ],
+                "title": "GroupedRequest"
+            },
+            "GroupedSummary": {
+                "properties": {
+                    "category_column": {
+                        "type": "string",
+                        "title": "Category Column"
+                    },
+                    "value_column": {
+                        "type": "string",
+                        "title": "Value Column"
+                    },
+                    "rows": {
+                        "items": {
+                            "$ref": "#/components/schemas/GroupRow"
+                        },
+                        "type": "array",
+                        "title": "Rows"
+                    },
+                    "total": {
+                        "type": "number",
+                        "title": "Total"
+                    },
+                    "shares_valid": {
+                        "type": "boolean",
+                        "title": "Shares Valid"
+                    },
+                    "note": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Note"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "category_column",
+                    "value_column",
+                    "rows",
+                    "total",
+                    "shares_valid"
+                ],
+                "title": "GroupedSummary"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "HistogramBin": {
+                "properties": {
+                    "start": {
+                        "type": "number",
+                        "title": "Start"
+                    },
+                    "end": {
+                        "type": "number",
+                        "title": "End"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "start",
+                    "end",
+                    "count"
+                ],
+                "title": "HistogramBin"
+            },
+            "NumericAnalysis": {
+                "properties": {
+                    "column": {
+                        "type": "string",
+                        "title": "Column"
+                    },
+                    "summary": {
+                        "$ref": "#/components/schemas/NumericSummary"
+                    },
+                    "histogram": {
+                        "items": {
+                            "$ref": "#/components/schemas/HistogramBin"
+                        },
+                        "type": "array",
+                        "title": "Histogram"
+                    },
+                    "box": {
+                        "$ref": "#/components/schemas/BoxPlot"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "column",
+                    "summary",
+                    "histogram",
+                    "box"
+                ],
+                "title": "NumericAnalysis"
+            },
+            "NumericSummary": {
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    },
+                    "mean": {
+                        "type": "number",
+                        "title": "Mean"
+                    },
+                    "median": {
+                        "type": "number",
+                        "title": "Median"
+                    },
+                    "std": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Std"
+                    },
+                    "min": {
+                        "type": "number",
+                        "title": "Min"
+                    },
+                    "max": {
+                        "type": "number",
+                        "title": "Max"
+                    },
+                    "q1": {
+                        "type": "number",
+                        "title": "Q1"
+                    },
+                    "q3": {
+                        "type": "number",
+                        "title": "Q3"
+                    },
+                    "iqr": {
+                        "type": "number",
+                        "title": "Iqr"
+                    },
+                    "sum": {
+                        "type": "number",
+                        "title": "Sum"
+                    },
+                    "negatives": {
+                        "type": "integer",
+                        "title": "Negatives"
+                    },
+                    "zeros": {
+                        "type": "integer",
+                        "title": "Zeros"
+                    },
+                    "skewness": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Skewness"
+                    },
+                    "outliers": {
+                        "$ref": "#/components/schemas/OutlierInfo"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "count",
+                    "mean",
+                    "median",
+                    "std",
+                    "min",
+                    "max",
+                    "q1",
+                    "q3",
+                    "iqr",
+                    "sum",
+                    "negatives",
+                    "zeros",
+                    "skewness",
+                    "outliers"
+                ],
+                "title": "NumericSummary"
+            },
+            "OutlierInfo": {
+                "properties": {
+                    "method": {
+                        "type": "string",
+                        "title": "Method"
+                    },
+                    "lower_fence": {
+                        "type": "number",
+                        "title": "Lower Fence"
+                    },
+                    "upper_fence": {
+                        "type": "number",
+                        "title": "Upper Fence"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    },
+                    "pct": {
+                        "type": "number",
+                        "title": "Pct"
+                    },
+                    "extreme_count": {
+                        "type": "integer",
+                        "title": "Extreme Count"
+                    },
+                    "examples": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "title": "Examples"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "method",
+                    "lower_fence",
+                    "upper_fence",
+                    "count",
+                    "pct",
+                    "extreme_count",
+                    "examples"
+                ],
+                "title": "OutlierInfo"
+            },
+            "Preview": {
+                "properties": {
+                    "columns": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Columns"
+                    },
+                    "rows": {
+                        "items": {
+                            "items": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ]
+                            },
+                            "type": "array"
+                        },
+                        "type": "array",
+                        "title": "Rows"
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "title": "Offset"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "title": "Limit"
+                    },
+                    "total_rows": {
+                        "type": "integer",
+                        "title": "Total Rows"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "columns",
+                    "rows",
+                    "offset",
+                    "limit",
+                    "total_rows"
+                ],
+                "title": "Preview"
+            },
+            "ScatterData": {
+                "properties": {
+                    "x": {
+                        "type": "string",
+                        "title": "X"
+                    },
+                    "y": {
+                        "type": "string",
+                        "title": "Y"
+                    },
+                    "points": {
+                        "items": {
+                            "$ref": "#/components/schemas/ScatterPoint"
+                        },
+                        "type": "array",
+                        "title": "Points"
+                    },
+                    "n_total": {
+                        "type": "integer",
+                        "title": "N Total"
+                    },
+                    "n_shown": {
+                        "type": "integer",
+                        "title": "N Shown"
+                    },
+                    "r": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "R"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "x",
+                    "y",
+                    "points",
+                    "n_total",
+                    "n_shown",
+                    "r"
+                ],
+                "title": "ScatterData"
+            },
+            "ScatterPoint": {
+                "properties": {
+                    "x": {
+                        "type": "number",
+                        "title": "X"
+                    },
+                    "y": {
+                        "type": "number",
+                        "title": "Y"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "x",
+                    "y"
+                ],
+                "title": "ScatterPoint"
+            },
+            "ScatterRequest": {
+                "properties": {
+                    "x": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "X"
+                    },
+                    "y": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "Y"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "x",
+                    "y"
+                ],
+                "title": "ScatterRequest"
+            },
+            "SheetList": {
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "title": "Filename"
+                    },
+                    "sheets": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Sheets"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "filename",
+                    "sheets"
+                ],
+                "title": "SheetList"
+            },
+            "TimePoint": {
+                "properties": {
+                    "period": {
+                        "type": "string",
+                        "title": "Period"
+                    },
+                    "label": {
+                        "type": "string",
+                        "title": "Label"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    },
+                    "value": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Value"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "period",
+                    "label",
+                    "count"
+                ],
+                "title": "TimePoint"
+            },
+            "TimeSeries": {
+                "properties": {
+                    "date_column": {
+                        "type": "string",
+                        "title": "Date Column"
+                    },
+                    "value_column": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Value Column"
+                    },
+                    "agg": {
+                        "type": "string",
+                        "enum": [
+                            "count",
+                            "sum",
+                            "mean"
+                        ],
+                        "title": "Agg"
+                    },
+                    "granularity": {
+                        "type": "string",
+                        "enum": [
+                            "day",
+                            "week",
+                            "month",
+                            "quarter",
+                            "year"
+                        ],
+                        "title": "Granularity"
+                    },
+                    "points": {
+                        "items": {
+                            "$ref": "#/components/schemas/TimePoint"
+                        },
+                        "type": "array",
+                        "title": "Points"
+                    },
+                    "first_period_partial": {
+                        "type": "boolean",
+                        "title": "First Period Partial"
+                    },
+                    "last_period_partial": {
+                        "type": "boolean",
+                        "title": "Last Period Partial"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "date_column",
+                    "agg",
+                    "granularity",
+                    "points",
+                    "first_period_partial",
+                    "last_period_partial"
+                ],
+                "title": "TimeSeries"
+            },
+            "TimeSeriesRequest": {
+                "properties": {
+                    "date_column": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "Date Column"
+                    },
+                    "value_column": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Value Column"
+                    },
+                    "agg": {
+                        "type": "string",
+                        "enum": [
+                            "count",
+                            "sum",
+                            "mean"
+                        ],
+                        "title": "Agg",
+                        "default": "count"
+                    },
+                    "granularity": {
+                        "type": "string",
+                        "enum": [
+                            "auto",
+                            "day",
+                            "week",
+                            "month",
+                            "quarter",
+                            "year"
+                        ],
+                        "title": "Granularity",
+                        "default": "auto"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "date_column"
+                ],
+                "title": "TimeSeriesRequest"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    },
+                    "input": {
+                        "title": "Input"
+                    },
+                    "ctx": {
+                        "type": "object",
+                        "title": "Context"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}

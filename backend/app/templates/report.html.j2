@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<style>
+  :root { --ink:#18181b; --muted:#52525b; --line:#e4e4e7; --soft:#f4f4f5; --accent:#0f766e; --warn:#b45309; --bad:#b91c1c; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); margin: 0; background: #fff; line-height: 1.5; }
+  main { max-width: 920px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 1.7rem; margin: 0 0 4px; overflow-wrap: anywhere; }
+  h3, p, li { overflow-wrap: anywhere; }
+  h2 { font-size: 1.25rem; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+  h3 { font-size: 1.02rem; margin: 20px 0 6px; }
+  .meta { color: var(--muted); font-size: .9rem; }
+  .demo { background: #fef3c7; border: 1px solid #f59e0b; color: #78350f; padding: 10px 14px; border-radius: 6px; font-weight: 600; margin: 16px 0; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+  .kpi { border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+  .kpi b { display: block; font-size: 1.4rem; }
+  .kpi span { color: var(--muted); font-size: .85rem; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 8px 0 16px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--soft); font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; }
+  .tag.confirmed { background: #fee2e2; color: var(--bad); }
+  .tag.potential { background: #ffedd5; color: var(--warn); }
+  .tag.desc { background: #ccfbf1; color: #115e59; }
+  .tag.interp { background: #e0e7ff; color: #3730a3; }
+  .tag.ai { background: #f3e8ff; color: #6b21a8; }
+  .finding { border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin: 14px 0; page-break-inside: avoid; }
+  .finding h3 { margin-top: 0; }
+  .score { float: right; color: var(--muted); font-size: .85rem; }
+  .caveat { background: var(--soft); border-left: 3px solid var(--warn); padding: 8px 12px; font-size: .9rem; }
+  .scroll { overflow-x: auto; }
+  figure { margin: 16px 0; page-break-inside: avoid; }
+  figcaption { color: var(--muted); font-size: .85rem; }
+  ul { padding-left: 20px; }
+  footer { margin-top: 48px; color: var(--muted); font-size: .8rem; border-top: 1px solid var(--line); padding-top: 12px; }
+  @media print { main { padding: 0; } h2 { page-break-after: avoid; } .noprint { display: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>{{ title }}</h1>
+  <p class="meta">
+    Dataset: <strong>{{ filename }}</strong>{% if sheet %} — worksheet “{{ sheet }}”{% endif %}<br>
+    Data loaded: {{ loaded_at }} UTC · Report generated: {{ generated_at }} UTC · Guided Data Analyst
+  </p>
+  {% if is_demo %}<div class="demo">DEMO DATA — this report uses a built-in synthetic dataset. All records are fictional.</div>{% endif %}
+
+  <h2>1. Dataset overview</h2>
+  <div class="kpis">
+    <div class="kpi"><b>{{ "{:,}".format(overview.rows) }}</b><span>rows</span></div>
+    <div class="kpi"><b>{{ overview.columns }}</b><span>columns</span></div>
+    <div class="kpi"><b>{{ overview.missing_cells_pct }}%</b><span>cells missing</span></div>
+    <div class="kpi"><b>{{ overview.duplicate_rows }}</b><span>duplicate rows</span></div>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Column</th><th>Type</th><th>Role</th><th class="num">Missing %</th><th class="num">Unique values</th></tr></thead>
+    <tbody>
+    {% for c in overview.column_table %}
+      <tr><td>{{ c.name }}</td><td>{{ c.type }}</td><td>{{ c.role }}</td><td class="num">{{ c.missing_pct }}</td><td class="num">{{ c.unique }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+
+  <h2>2. Data-quality assessment</h2>
+  <p><span class="tag confirmed">Confirmed</span> issues are objectively present in the file. <span class="tag potential">Potential</span> issues need investigation and may be legitimate.</p>
+  <h3>Confirmed issues ({{ quality.confirmed|length }})</h3>
+  {% if quality.confirmed %}<ul>{% for i in quality.confirmed %}<li><strong>{{ i.id }}</strong> {{ i.message }}</li>{% endfor %}</ul>{% else %}<p>No confirmed issues were detected.</p>{% endif %}
+  <h3>Potential issues ({{ quality.potential|length }})</h3>
+  {% if quality.potential %}<ul>{% for i in quality.potential %}<li><strong>{{ i.id }}</strong> {{ i.message }}</li>{% endfor %}</ul>{% else %}<p>No potential issues were detected.</p>{% endif %}
+  {% if quality.parse_notes %}<h3>Changes made while reading the file</h3><ul>{% for n in quality.parse_notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
+
+  <h2>3. Analytical methodology</h2>
+  <ul>{% for m in methodology %}<li>{{ m }}</li>{% endfor %}</ul>
+
+  <h2>4. Key statistics</h2>
+  {% if key_stats.numeric %}
+  <div class="scroll"><table>
+    <thead><tr><th>Numeric column</th><th class="num">Count</th><th class="num">Mean</th><th class="num">Median</th><th class="num">Std dev</th><th class="num">Min</th><th class="num">Max</th><th class="num">Potential outliers</th></tr></thead>
+    <tbody>{% for r in key_stats.numeric %}<tr><td>{{ r.column }}</td><td class="num">{{ r.count }}</td><td class="num">{{ r.mean }}</td><td class="num">{{ r.median }}</td><td class="num">{{ r.std }}</td><td class="num">{{ r.min }}</td><td class="num">{{ r.max }}</td><td class="num">{{ r.outliers }}</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% else %}<p>The dataset has no numeric measures to summarise.</p>{% endif %}
+  {% for c in key_stats.categorical %}
+    <h3>{{ c.column }} — most common values</h3>
+    <div class="scroll"><table><thead><tr><th>Value</th><th class="num">Count</th><th class="num">% of non-missing</th></tr></thead>
+    <tbody>{% for r in c.rows[:5] %}<tr><td>{{ r.value }}</td><td class="num">{{ r.count }}</td><td class="num">{{ r.pct }}</td></tr>{% endfor %}</tbody></table></div>
+  {% endfor %}
+  {% if correlations %}
+    <h3>Correlations between numeric columns</h3>
+    <div class="scroll"><table><thead><tr><th>Column A</th><th>Column B</th><th class="num">Pearson r</th><th class="num">Rows</th><th>Strength</th></tr></thead>
+    <tbody>{% for p in correlations %}<tr><td>{{ p.x }}</td><td>{{ p.y }}</td><td class="num">{{ "%+.3f"|format(p.r) }}</td><td class="num">{{ p.n }}</td><td>{{ p.strength }}</td></tr>{% endfor %}</tbody></table></div>
+  {% endif %}
+
+  <h2>5. Charts</h2>
+  {% if charts %}
+    {% for ch in charts %}<figure><h3>{{ ch.title }}</h3>{{ ch.svg|safe }}<figcaption>{{ ch.caption }}</figcaption></figure>{% endfor %}
+  {% else %}<p>No charts were applicable to this dataset.</p>{% endif %}
+
+  <h2>6. Prioritised findings</h2>
+  <p>Each finding states what the data shows <span class="tag desc">Descriptive</span>, separately from what it might mean <span class="tag interp">Interpretation</span>.</p>
+  {% if findings %}
+    {% for f in findings %}
+    <article class="finding">
+      <span class="score">{{ f.id }} · score {{ f.score }} · {{ f.strength }}</span>
+      <h3>{{ f.title }}</h3>
+      <p><span class="tag desc">Descriptive</span> {{ f.description }}</p>
+      <div class="scroll"><table><thead><tr><th>Evidence</th><th>Value</th><th>How it was calculated</th></tr></thead>
+      <tbody>{% for e in f.evidence %}<tr><td>{{ e.label }}</td><td>{{ e.value }}</td><td>{{ e.calculation }}</td></tr>{% endfor %}</tbody></table></div>
+      <p class="meta">Columns: {{ f.columns|join(", ") if f.columns else "whole dataset" }}{% if f.period %} · Period: {{ f.period }}{% endif %}</p>
+      <p><span class="tag interp">Interpretation</span> {{ f.why_it_matters }}</p>
+      <p class="caveat"><strong>Caveat:</strong> {{ f.caveat }}</p>
+      <p><strong>Suggested follow-up:</strong> {{ f.follow_up }}</p>
+    </article>
+    {% endfor %}
+  {% else %}
+    <p>{{ findings_message }}</p>
+  {% endif %}
+  <details><summary>How findings are ranked</summary><ul>{% for r in ranking %}<li>{{ r }}</li>{% endfor %}</ul></details>
+
+  {% if ai %}
+  <h2>AI-generated explanation</h2>
+  <p><span class="tag ai">AI-generated</span> {{ ai.disclaimer }} Model: {{ ai.model }}.</p>
+  <p>{{ ai.summary }}</p>
+  {% for e in ai.explanations %}<p><strong>{{ e.finding_id }}:</strong> {{ e.explanation }}{% if e.unverified_numbers %} <em>(contains numbers not found in the supplied evidence: {{ e.unverified_numbers|join(", ") }})</em>{% endif %}</p>{% endfor %}
+  {% if ai.warnings %}<ul>{% for w in ai.warnings %}<li>{{ w }}</li>{% endfor %}</ul>{% endif %}
+  {% endif %}
+
+  <h2>7. Limitations and assumptions</h2>
+  <ul>{% for l in limitations %}<li>{{ l }}</li>{% endfor %}</ul>
+
+  <h2>8. Suggested next steps</h2>
+  <ol>{% for s in next_steps %}<li>{{ s }}</li>{% endfor %}</ol>
+
+  <footer>Generated by Guided Data Analyst, an open-source learning project. Not validated for confidential, personal or patient data. To save as PDF, use your browser's Print → Save as PDF.</footer>
+</main>
+</body>
+</html>
