@@ -1,0 +1,29 @@
+INFO:     Started server process [3283]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:47310 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "GET /api/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47332 - "GET /api/demo-datasets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47332 - "POST /api/demo-datasets/small-business HTTP/1.1" 201 Created
+INFO:     127.0.0.1:47332 - "GET /api/datasets/RNbDP6_OayiMRfRiU3hkoA/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47332 - "GET /api/datasets/RNbDP6_OayiMRfRiU3hkoA/analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47332 - "OPTIONS /api/datasets/RNbDP6_OayiMRfRiU3hkoA/explore/timeseries HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "POST /api/datasets/RNbDP6_OayiMRfRiU3hkoA/explore/timeseries HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "GET /api/datasets/RNbDP6_OayiMRfRiU3hkoA/findings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36344 - "GET /api/datasets/RNbDP6_OayiMRfRiU3hkoA/report.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36344 - "GET /api/datasets/RNbDP6_OayiMRfRiU3hkoA/export/column_profile.csv HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36354 - "GET /api/demo-datasets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36348 - "GET /api/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36348 - "POST /api/datasets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:36348 - "POST /api/files/sheets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36348 - "POST /api/datasets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:36348 - "POST /api/datasets HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:36382 - "GET /api/demo-datasets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36366 - "GET /api/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36366 - "POST /api/demo-datasets/retail HTTP/1.1" 201 Created
+INFO:     127.0.0.1:36366 - "GET /api/datasets/i8Q7xxpRP0aBBasiPtkxjw/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36366 - "GET /api/datasets/i8Q7xxpRP0aBBasiPtkxjw/analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36366 - "GET /api/datasets/i8Q7xxpRP0aBBasiPtkxjw/findings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36402 - "GET /api/demo-datasets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36386 - "GET /api/config HTTP/1.1" 200 OK
