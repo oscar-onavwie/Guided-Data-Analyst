@@ -46,6 +46,8 @@ jobs:
     # Full browser journey against the real backend and a production frontend build
     runs-on: ubuntu-latest
     needs: [backend, frontend]
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -65,7 +67,22 @@ jobs:
           (cd frontend && NEXT_PUBLIC_API_URL=http://localhost:8000 npm start -- -p 3000 > ../frontend.log 2>&1 &)
           for i in $(seq 1 60); do curl -sf localhost:8000/api/health && curl -sf -o /dev/null localhost:3000 && break; sleep 1; done
       - name: End-to-end tests
-        run: pytest e2e -q
+        run: |
+          set -o pipefail
+          pytest e2e -q -rf --tb=short 2>&1 | tee e2e-output.txt
+      - name: Report failures as annotations
+        if: failure()
+        run: |
+          grep -E "^(FAILED|E  )" e2e-output.txt | head -40 | sed 's/%/%25/g' | while IFS= read -r line; do echo "::error::$line"; done
+          tail -20 frontend.log | while IFS= read -r line; do echo "::warning::frontend: $line"; done
+      - name: Publish screenshots to the ci-screenshots branch (temporary, for review)
+        if: always()
+        run: |
+          mkdir -p /tmp/shots && cp -r e2e/screenshots/. /tmp/shots/ 2>/dev/null || true
+          cp e2e-output.txt backend.log frontend.log /tmp/shots/ 2>/dev/null || true
+          cd /tmp/shots && git init -q -b ci-screenshots && git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "e2e screenshots ${GITHUB_SHA}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-screenshots
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
