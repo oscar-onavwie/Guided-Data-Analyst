@@ -41,3 +41,37 @@ jobs:
         run: npm run lint
       - name: Production build
         run: npm run build
+
+  e2e:
+    # Full browser journey against the real backend and a production frontend build
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        run: |
+          pip install -r backend/requirements.txt pytest playwright
+          python -m playwright install --with-deps chromium
+          cd frontend && npm install --no-audit --no-fund && npm run build
+      - name: Start servers
+        run: |
+          (cd backend && uvicorn app.main:app --port 8000 > ../backend.log 2>&1 &)
+          (cd frontend && NEXT_PUBLIC_API_URL=http://localhost:8000 npm start -- -p 3000 > ../frontend.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf localhost:8000/api/health && curl -sf -o /dev/null localhost:3000 && break; sleep 1; done
+      - name: End-to-end tests
+        run: pytest e2e -q
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-screenshots
+          path: |
+            e2e/screenshots/
+            backend.log
+            frontend.log
